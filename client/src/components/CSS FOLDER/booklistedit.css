@@ -1,0 +1,57 @@
+/* BookListEdit.css */
+
+/* General Styling */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f5e1c0; /* Light brown */
+  color: #5a3e1b; /* Dark brown */
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.book-list-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #e6c29f; /* Beige brown */
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+h2 {
+  text-align: center;
+  color: #4a2c17; /* Dark brown */
+}
+
+/* List */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #d4a373; /* Warm brown */
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Edit Button */
+button {
+  background-color: #8c5e34; /* Coffee brown */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #5a3e1b; /* Darker brown */
+}

@@ -1,0 +1,98 @@
+/* --- General Button Styling --- */
+.borrow-button {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #8B4513; /* Saddle Brown */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 220px; /* Keeps button size consistent */
+    margin: 20px auto; /* Centers button horizontally */
+    text-align: center;
+}
+
+/* --- Hover Effect --- */
+.borrow-button:hover {
+    background-color: #5D3311; /* Darker Brown */
+    transform: scale(1.07);
+}
+
+/* --- Disabled State (Unavailable Book) --- */
+.borrow-button.unavailable {
+    background-color: #A9A9A9; /* Dark Gray */
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- Disabled State (Loading) --- */
+.borrow-button.disabled {
+    background-color: #C4A484; /* Light Brown */
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Centering inside parent container */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.borrowed-books-container {
+    max-width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    color: #5a3e2b; /* Warm brown */
+    background: #fffaf0; /* Light beige */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.borrowed-books-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+}
+
+.borrowed-book-card {
+    width: 250px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.borrowed-book-card:hover {
+    transform: scale(1.05);
+}
+
+.borrowed-book-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.borrowed-book-card h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.borrowed-book-card p {
+    font-size: 14px;
+    margin: 5px 0;
+}

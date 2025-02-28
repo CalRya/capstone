@@ -1,0 +1,16 @@
+.announcement-box {
+    background-color: #d4a373;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: 0.3s;
+}
+
+.announcement-box:hover {
+    background-color: #a56c43;
+}

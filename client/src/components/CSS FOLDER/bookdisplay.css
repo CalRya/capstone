@@ -1,0 +1,190 @@
+/* 🌟 General Styling */
+.book-display-container {
+    text-align: center;
+    padding: 100px;
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+ 
+}
+
+
+/* 📚 Book List */
+.book-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 0;
+    margin-top: 20px;
+}
+
+/* 📌 Book Card */
+.book-card {
+    background: linear-gradient(145deg, #ffffff, #f5e6d6);
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+    width: 250px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 📌 Book Cover */
+.book-card img {
+    width: 140px;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 12px; /* Rounded book cover */
+    margin-bottom: 12px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.book-card:hover img {
+    transform: scale(1.07);
+}
+
+/* 📌 Book Title */
+.book-card h2 {
+    font-size: 18px;
+    color: #5c3d2e;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+/* 📌 Book Info */
+.book-card p {
+    font-size: 14px;
+    color: #7a6652;
+    margin: 4px 0;
+}
+
+/* 📌 Availability Status */
+.availability {
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 8px; /* Rounded availability badge */
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.available {
+    color: #2e7d32;
+    background: #e8f5e9;
+    border-radius: 10px;
+}
+
+.unavailable {
+    color: #d32f2f;
+    background: #ffebee;
+    border-radius: 10px;
+}
+
+/* 📌 Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dark blur effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+}
+
+/* 📌 Modal Content */
+.modal-content {
+    background: linear-gradient(145deg, #fff8f3, #f2e1d5);
+    width: 450px;
+    padding: 25px;
+    border-radius: 20px; /* Rounded modal */
+    text-align: center;
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+/* 📌 Close Button */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #b77b43;
+    transition: color 0.3s ease-in-out;
+    border-radius: 50%; /* Rounded close button */
+    padding: 5px;
+}
+
+.close-btn:hover {
+    color: #965a2b;
+    background: rgba(183, 123, 67, 0.2);
+}
+
+/* 📌 Modal Book Cover */
+.modal-content img {
+    width: 180px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 12px; /* Rounded book cover inside modal */
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 📌 Scrollable Description */
+.modal-content p {
+    text-align: justify;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 8px 15px;
+    color: #5c3d2e;
+    border-radius: 10px; /* Rounded text box */
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: #b77b43;
+    border-radius: 5px;
+}
+
+/* 📌 Borrow Button */
+.borrow-button {
+    margin-top: 15px;
+    padding: 12px 18px;
+    background: #b77b43;
+    color: white;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 12px; /* Rounded button */
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.borrow-button:hover {
+    background: #965a2b;
+}
+
+/* 📌 Ensure It Stays Below Navbar */
+.book-display-container {
+    padding-top: 100px; /* Adjust based on navbar height */
+}
+

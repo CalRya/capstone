@@ -1,0 +1,101 @@
+/* Ensure the table section is positioned properly */
+.borrow-requests-container {
+  max-width: 90%;
+  margin: 120px auto 20px; /* Moves the container down */
+  padding: 20px;
+  background: #fffaf0; /* Light beige background */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  color: #5a3e2b; /* Warm brown text */
+  /* Removed max-height and overflow-y so it scrolls naturally */
+}
+
+/* Table Styles */
+.borrow-requests-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  color: #5a3e2b; /* Brown text */
+  table-layout: fixed; /* Keeps columns aligned */
+  word-wrap: break-word;
+}
+
+/* Table Head */
+.borrow-table th, 
+.borrow-table td {
+  border: 1px solid #d2b48c; /* Light brown border */
+  padding: 14px;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: normal; /* Allows text wrapping */
+}
+
+.borrow-table th {
+  background-color: #8b5e3c; /* Deep brown header */
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Table Row Styling */
+.borrow-table tr:nth-child(even) {
+  background-color: #f5e1c5; /* Light tan for even rows */
+}
+
+.borrow-table tr:hover {
+  background-color: #e3c6a0; /* Light brown hover effect */
+}
+
+/* Buttons */
+button {
+  border: none;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  color: white;
+}
+
+.approve-btn {
+  background-color: #6b8e23; /* Olive green */
+}
+
+.return-btn {
+  background-color: #8b5e3c; /* Deep brown */
+}
+
+/* Button Hover Effects */
+.approve-btn:hover {
+  background-color: #556b2f;
+}
+
+.return-btn:hover {
+  background-color: #6b3e2b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .borrow-requests-container {
+      max-width: 100%;
+      padding: 10px;
+  }
+
+  .borrow-table {
+      font-size: 14px;
+  }
+
+  .borrow-table th, 
+  .borrow-table td {
+      padding: 10px;
+  }
+
+  button {
+      padding: 8px 12px;
+      font-size: 12px;
+  }
+}

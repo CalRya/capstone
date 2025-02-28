@@ -1,0 +1,94 @@
+/* AddBook.css - Brown-themed cozy book form */
+.add-book-container {
+  padding: 20px;
+
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 140px auto 40px; /* Increased margin-top & margin-bottom */
+  font-family: "Georgia", serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: auto; /* Removed fixed height to prevent cutting off */
+}
+
+/* Ensures full page is scrollable when needed */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents horizontal overflow */
+  padding-top: 120px; /* Pushes all content down below the navbar */
+}
+
+/* Heading */
+.add-book-container h2 {
+  text-align: center;
+  color: #5a3e2b; /* Rich brown */
+}
+
+/* Form Layout */
+.add-book-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Input Fields & Select Dropdown */
+.add-book-form input,
+.add-book-form select {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #c0a080;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Focused Input */
+.add-book-form input:focus,
+.add-book-form select:focus {
+  outline: none;
+  border-color: #8b5e3b;
+}
+
+/* Labels */
+.add-book-form label {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #5a3e2b;
+}
+
+/* Checkbox */
+.add-book-form input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+/* Button Styling */
+.add-book-form button {
+  background-color: #8b5e3b;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px; /* Added margin so it doesn’t stick to inputs */
+  width: 100%; /* Ensures it fits properly */
+}
+
+/* Button Hover */
+.add-book-form button:hover {
+  background-color: #6a442c;
+}
+
+/* Prevent Overlapping on Small Screens */
+@media (max-width: 500px) {
+  .add-book-container {
+    max-width: 90%;
+    margin-top: 160px; /* Increased spacing on small screens */
+  }
+}

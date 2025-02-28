@@ -1,0 +1,39 @@
+    .Lib {
+        width: 100%;
+        min-height: 100vh;
+        background: linear-gradient(rgba(239, 190, 139, 0.7), rgba(202, 178, 144, 0.7)), url('../../../assets/hyuna.jpg');
+        background-size: cover;
+        background-position: center;
+        color: #7a4219;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lib text{
+        text-align: center;
+        color: #7a4219;
+        max-width: 800px;
+    }
+    .lib-text h1{
+        font-size: 60px;
+        color: #7a4219;
+        font-weight: 600;
+    }
+
+    lib-text p{
+        max-width: 700 px;
+        color: #7a4219;
+        margin: 10px auto 20px;
+        line-height: 1.4;
+    }
+
+    /* --- Ensure Navbar is Visible --- */
+    .digilib-container {
+        padding-top: 80px; /* ✅ Adds space below navbar */
+        max-width: 90%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    
