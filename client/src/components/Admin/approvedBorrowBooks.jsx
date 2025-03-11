@@ -6,7 +6,7 @@ const ApproveBorrowRequests = () => {
   const [borrowRequests, setBorrowRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
-  const [notificationMessage, setNotificationMessage] = useState(""); // ✅ New state for notifications
+  const [notificationMessage, setNotificationMessage] = useState("");
 
   useEffect(() => {
     const fetchBorrowRequests = async () => {
@@ -22,6 +22,21 @@ const ApproveBorrowRequests = () => {
     };
     fetchBorrowRequests();
   }, []);
+
+  const calculateLateFee = (dueDate, returnDate) => {
+    const due = new Date(dueDate);
+    const returned = returnDate ? new Date(returnDate) : new Date(); // Use today's date if not returned
+    
+    console.log(`📅 Due Date: ${due.toLocaleDateString()} | Return Date: ${returned.toLocaleDateString()}`);
+    
+    if (returned <= due) return "No Fee";
+    
+    const daysLate = Math.ceil((returned - due) / (1000 * 60 * 60 * 24));
+    const fee = 15 + (daysLate - 1) * 5;
+    
+    console.log(`💰 Late Fee Calculated: ₱${fee}`);
+    return `₱${fee}`;
+  };
 
   const handleApproveRequest = async (borrowId) => {
     try {
@@ -43,15 +58,24 @@ const ApproveBorrowRequests = () => {
     try {
       const response = await axios.put(`http://localhost:3004/api/borrow/return/${borrowId}`);
       console.log("✅ Return Response:", response.data);
-      
+  
+      if (!response.data.returnDate) {
+        console.warn("⚠️ No returnDate received from API!");
+      }
+  
       alert(response.data.message || "Book returned successfully!");
   
       setBorrowRequests(prevRequests =>
         prevRequests.map(request =>
-          request._id === borrowId ? { ...request, status: "returned" } : request
+          request._id === borrowId
+            ? { 
+                ...request, 
+                status: "returned", 
+                returnDate: response.data.returnDate || new Date().toISOString() // Fallback date
+              }
+            : request
         )
       );
-  
     } catch (error) {
       console.error("❌ Error returning book:", error);
       alert("Failed to return book. Please try again.");
@@ -77,6 +101,18 @@ const ApproveBorrowRequests = () => {
     }
   };
 
+  // Sort books so returned ones are placed at the bottom
+  const sortedRequests = borrowRequests.sort((a, b) => {
+    const statusOrder = {
+      pending: 1,
+      approved: 2,
+      overdue: 3,
+      returned: 4,
+    };
+
+    return statusOrder[a.status] - statusOrder[b.status];
+  });
+
   return (
     <div className="borrow-requests-container">
       <h2>Borrow Requests</h2>
@@ -98,32 +134,39 @@ const ApproveBorrowRequests = () => {
               <th>User</th>
               <th>Borrow Date</th>
               <th>Due Date</th>
+              <th>Return Date</th> {/* ✅ Added Return Date */}
+              <th>Late Fee</th> {/* ✅ Added Late Fee Column */}
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {borrowRequests.map((request) => (
-              <tr key={request._id}>
-                <td>{request.book?.bookTitle || "Unknown Book"}</td>
-                <td>{request.user?.user || "Unknown User"}</td>
-                <td>{new Date(request.borrowDate).toLocaleDateString()}</td>
-                <td>{new Date(request.dueDate).toLocaleDateString()}</td>
-                <td className={`status-${request.status}`}>{request.status}</td>
-                <td>
-                  {request.status === "pending" && (
-                    <button className="approve-btn" onClick={() => handleApproveRequest(request._id)}>
-                      Approve
-                    </button>
-                  )}
-                  {["approved", "overdue"].includes(request.status) && (
-                    <button className="return-btn" onClick={() => handleReturnRequest(request._id)}>
-                      Return
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {sortedRequests.map((request) => {
+              const lateFee = calculateLateFee(request.dueDate, request.returnDate);
+              return (
+                <tr key={request._id}>
+                  <td>{request.book?.bookTitle || "Unknown Book"}</td>
+                  <td>{request.user?.user || "Unknown User"}</td>
+                  <td>{new Date(request.borrowDate).toLocaleDateString()}</td>
+                  <td>{new Date(request.dueDate).toLocaleDateString()}</td>
+                  <td>{request.returnDate ? new Date(request.returnDate).toLocaleDateString() : "Not Returned"}</td> {/* ✅ Show Return Date */}
+                  <td>{lateFee}</td> {/* ✅ Display Late Fee */}
+                  <td className={`status-${request.status}`}>{request.status}</td>
+                  <td>
+                    {request.status === "pending" && (
+                      <button className="approve-btn" onClick={() => handleApproveRequest(request._id)}>
+                        Approve
+                      </button>
+                    )}
+                    {["approved", "overdue"].includes(request.status) && (
+                      <button className="return-btn" onClick={() => handleReturnRequest(request._id)}>
+                        Return
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

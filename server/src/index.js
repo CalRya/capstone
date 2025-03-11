@@ -14,6 +14,15 @@ const borrowRoutes = require("../routes/borrowRoutes");
 const authenticateUser = require("../middleware/authMiddleware");
 const nodemailer = require("nodemailer");
 
+const calculateLateFee = (dueDate) => {
+    const today = new Date();
+    const due = new Date(dueDate);
+
+    const daysLate = Math.max(0, Math.ceil((today - due) / (1000 * 60 * 60 * 24))); // Convert ms to days
+
+    if (daysLate === 0) return 0; // Not late
+    return 15 + (daysLate - 1) * 5; // ₱15 once late + ₱5 per extra day
+};
 
 const app = express();
 app.use(express.json());
@@ -35,8 +44,15 @@ app.options("*", (req, res) => {
 
 // ✅ MongoDB Connection
 mongoose.connect("mongodb://localhost:27017/CAPSTONE")
-    .then(() => console.log("✅ Connected to MongoDB"))
+    .then(async () => {
+        console.log("✅ Connected to MongoDB");
+
+        // ✅ Ensure all books have an averageRating field
+        await Book.updateMany({}, { $set: { averageRating: 0 } });
+        console.log("✅ Initialized averageRating for all books");
+    })
     .catch((err) => console.error("❌ MongoDB connection error:", err));
+
 
 // ✅ User Registration
 app.post("/register", async (req, res) => {
@@ -151,22 +167,35 @@ app.post("/api/borrow/:bookID", async (req, res) => {
 app.post("/api/return/:borrowId", async (req, res) => {
     try {
         const { borrowId } = req.params;
-
         const borrowEntry = await Borrow.findById(borrowId);
+
         if (!borrowEntry) return res.status(404).json({ message: "Borrow record not found" });
+
+        const lateFee = calculateLateFee(borrowEntry.dueDate);
 
         borrowEntry.status = "returned";
         borrowEntry.returnedAt = new Date();
+        borrowEntry.lateFee = lateFee; // Apply calculated fee
         await borrowEntry.save();
 
-        await Book.findByIdAndUpdate(borrowEntry.book, { bookavailability: true, borrowedBy: null });
+        await Book.findByIdAndUpdate(borrowEntry.book, { bookAvailability: true, borrowedBy: null });
 
-        res.status(200).json({ message: "Book returned successfully!" });
+        res.status(200).json({ message: "Book returned successfully!", lateFee });
     } catch (error) {
         console.error("❌ Error returning book:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+app.get("/api/books", async (req, res) => {
+    try {
+        const books = await Book.find(); // Assuming you're using MongoDB
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
+
 
 // ✅ Get ALL Borrow Requests (for admin)
 app.get("/api/borrow", async (req, res) => {
@@ -214,6 +243,7 @@ app.post("/api/books", upload.single("bookCover"), async (req, res) => {
             bookPlatform: bookPlatform || "",
             bookAvailability: isAvailable,
             bookCoverUrl,
+            averageRating: 0,
         });
 
         console.log("✅ Final book object before saving:", newBook);
@@ -285,34 +315,45 @@ async function checkOverdueBooks() {
 // ✅ Schedule Overdue Check Every Hour
 setInterval(checkOverdueBooks, 60 * 60 * 1000); // Run every 1 hour
 
+
   
-app.put("/api/books/:id", async (req, res) => {
-    const { id } = req.params;
+// Example Express.js route handler
+app.put('/api/books/:id', upload.single('bookCover'), async (req, res) => {
     const { bookTitle, bookAuthor, bookDescription, bookGenre, bookPlatform, bookAvailability } = req.body;
-  
+    const bookCover = req.file; // Handle file separately
+
+    // Convert bookAvailability to a boolean value
+    const availability = bookAvailability === 'true' ? true : false;
+
     try {
-        const updatedBook = await Book.findByIdAndUpdate(id, {
-            bookTitle,
-            bookAuthor,
-            bookDescription,
-            bookGenre,
-            bookPlatform,
-            bookAvailability: bookAvailability === "true" || bookAvailability === true,
-        }, { new: true });
+      // Update the book with new data, including the file if present
+      const updatedBook = await Book.findByIdAndUpdate(
+        req.params.id,
+        {
+          bookTitle,
+          bookAuthor,
+          bookDescription,
+          bookGenre,
+          bookPlatform,
+          bookAvailability: availability, // Ensure it's a boolean
+          bookCoverUrl: bookCover ? `/uploads/${bookCover.filename}` : undefined, // Handle book cover if present
+        },
+        { new: true }
+      );
 
-        if (!updatedBook) {
-            return res.status(404).json({ message: "Book not found" });
-        }
+      if (!updatedBook) {
+        return res.status(404).json({ message: "Book not found" });
+      }
 
-        console.log("✅ Book updated in database:", updatedBook);
-        res.json(updatedBook);
+      res.status(200).json(updatedBook); // Return updated book info
     } catch (error) {
-        console.error("❌ Error updating book:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+      console.error("❌ Error updating book:", error);
+      res.status(500).json({ message: "Failed to update book" });
     }
 });
 
   
+
 
   app.delete("/api/books/:id", async (req, res) => {
     const { id } = req.params;
@@ -328,7 +369,118 @@ app.put("/api/books/:id", async (req, res) => {
     }
   });
   
-  
+  // ✅ Get User Profile by ID
+  app.get("/api/users/:id", async (req, res) => {
+    try {
+        let id = req.params.id.trim();  // ✅ Remove extra spaces & newlines
+        console.log("📢 Fetching user with ID:", `"${id}"`); // Debug log
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            console.log("❌ Invalid ObjectId format");
+            return res.status(400).json({ error: "Invalid user ID format" });
+        }
+
+        const user = await userModel.findById(id).select("user email role");
+
+        if (!user) {
+            console.log("❌ User not found in database");
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        console.log("✅ User found:", user);
+        res.json(user);
+    } catch (error) {
+        console.error("❌ Error fetching user:", error);
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+});
+
+// ✅ Rate a Borrowed Book
+app.put("/api/rate/:borrowId", async (req, res) => {
+    console.log("🚀 API HIT: PUT /api/rate/:borrowId");
+
+    try {
+        const { rating } = req.body;
+        let borrowId = req.params.borrowId.trim();
+
+        console.log("📩 Received Rating Request for Borrow ID:", borrowId, "Rating:", rating);  // Log rating and borrowId
+
+        if (!rating || rating < 1 || rating > 5) {
+            console.log("❌ Invalid rating received");
+            return res.status(400).json({ message: "Invalid rating. Must be between 1 and 5." });
+        }
+
+        // ✅ Find the borrow record
+        const borrow = await Borrow.findById(borrowId);
+        if (!borrow) {
+            console.log("❌ Borrow record not found");
+            return res.status(404).json({ message: "Borrow record not found" });
+        }
+
+        console.log("✅ Found Borrow Record:", borrow);
+
+        // ✅ Find the book associated with the borrow record
+        const book = await Book.findById(borrow.book);
+        if (!book) {
+            console.log("❌ Book record not found");
+            return res.status(404).json({ message: "Book record not found" });
+        }
+
+        console.log("✅ Found Book Record:", book);
+
+        // ✅ Check if the user already rated this book
+        const userRating = book.ratings.find((r) => r.user.toString() === borrow.user.toString());
+        if (userRating) {
+            console.log("❌ User has already rated this book");
+            return res.status(400).json({ message: "You have already rated this book." });
+        }
+
+        // ✅ Add the rating to the book's ratings array
+        book.ratings.push({ user: borrow.user, rating });
+        await book.save();
+        console.log("✅ Rating saved in Book collection");
+
+        // ✅ Calculate the new average rating
+        const totalRatings = book.ratings.length;
+        const sumRatings = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+        const newAverage = totalRatings > 0 ? parseFloat((sumRatings / totalRatings).toFixed(1)) : 0;
+
+        console.log("⭐ New Average Rating Calculated:", newAverage);
+
+        // ✅ Update the average rating in the Book collection
+        book.averageRating = newAverage;
+        await book.save();
+        console.log("✅ Book updated successfully with new average rating:", book);
+
+        res.status(200).json({ message: "Rating submitted successfully!", averageRating: newAverage });
+
+    } catch (error) {
+        console.error("❌ Error submitting rating:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+//MINIGAME ONE
+
+const Quote = mongoose.model('Quote', new mongoose.Schema({
+    text: String,
+    author: String,
+}));
+
+// Fetch a random quote dynamically
+app.get('/quote', async (req, res) => {
+    try {
+        const quote = await Quote.aggregate([{ $sample: { size: 1 } }]);
+        if (!quote.length) {
+            return res.status(404).json({ error: "No quotes found." });
+        }
+        res.json(quote[0]); // Send the quote dynamically
+    } catch (error) {
+        console.error("Error fetching quote:", error);
+        res.status(500).json({ error: "Error fetching quote" });
+    }
+});
+
   
 // ✅ Routes
 app.use("/api", bookRoutes);

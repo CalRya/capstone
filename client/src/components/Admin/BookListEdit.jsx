@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const BookListEdit = ({ onEdit }) => {
+const BookListEdit = ({ onEdit, searchQuery }) => { // ✅ Accept searchQuery as a prop
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -10,12 +10,24 @@ const BookListEdit = ({ onEdit }) => {
       .catch((error) => console.error("Error fetching books:", error));
   }, []);
 
+  // ✅ Filter books based on searchQuery
+  const filteredBooks = books.filter(book =>
+    book.bookTitle.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={styles.bookListContainer}>
-      <h2 style={styles.heading}>📚 Book List</h2>
+      <h2 style={styles.heading}>Book List</h2>
       <ul style={styles.bookList}>
-        {books.map((book) => (
+        {filteredBooks.map((book) => ( // ✅ Use filteredBooks instead of books
           <li key={book._id} style={styles.bookCard}>
+            {book.bookCoverUrl && (
+              <img
+                src={`http://localhost:3004${book.bookCoverUrl}`}
+                alt={`Cover of ${book.bookTitle}`}
+                style={styles.bookCover}
+              />
+            )}
             <div style={styles.bookInfo}>
               <strong style={styles.bookTitle}>{book.bookTitle}</strong>
               <p style={styles.bookAuthor}>by {book.bookAuthor}</p>
@@ -35,7 +47,7 @@ const styles = {
     padding: "30px",
     fontFamily: "'Poppins', sans-serif",
     minHeight: "100vh",
-    paddingTop: "50px", // Adjust for navbar
+    paddingTop: "50px",
   },
   heading: {
     fontSize: "24px",
@@ -63,9 +75,13 @@ const styles = {
     position: "relative",
     overflow: "hidden",
   },
-  bookCardHover: {
-    transform: "translateY(-8px)",
-    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
+  bookCover: {
+    width: "160px",
+    height: "250px",
+    objectFit: "cover",
+    borderRadius: "10px",
+    display: "block",
+    margin: "0 auto 12px auto",
   },
   bookInfo: {
     marginBottom: "12px",

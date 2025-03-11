@@ -2,6 +2,7 @@
 .borrowed-books-container {
     background-color: #f5e1c8; /* Soft beige background */
     padding: 20px;
+    padding-top: 50px;
     border-radius: 8px;
     max-width: 800px;
     margin: 20px auto;
@@ -120,5 +121,36 @@
   .status-unknown {
     background-color: #9e9e9e;
     color: black;
+  }
+  
+  .rating-container {
+    margin-top: 10px;
+  }
+  
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s;
+  }
+  
+  .star.filled {
+    color: gold;
+  }
+  
+  .star:hover {
+    color: orange;
+  }
+  .toggle-books-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-books-btn:hover {
+    background-color: #45a049;
   }
   

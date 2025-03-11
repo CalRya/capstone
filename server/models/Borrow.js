@@ -31,6 +31,10 @@ const BorrowSchema = new mongoose.Schema({
     notified: { 
         type: Boolean, 
         default: false },
-});
+        
+    rating: { 
+        type: Number, min: 1, max: 5 } // ⭐ New field for storing ratings
+    });
+
 
 module.exports = mongoose.model("Borrow", BorrowSchema);

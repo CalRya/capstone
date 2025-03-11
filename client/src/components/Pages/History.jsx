@@ -12,11 +12,7 @@ function Prof() {
   return (
     <main className="App">
       <Navbar />
-      {currentUser ? (
-        <UserProfile userId={currentUser.id} />
-      ) : (
-        <p>Loading user...</p>
-      )}
+      <BorrowBooks />
     </main>
     
   );

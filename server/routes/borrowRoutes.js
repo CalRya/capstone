@@ -109,6 +109,33 @@ router.put("/deny/:borrowId", async (req, res) => {
         res.status(500).json({ message: "Error denying borrow request" });
     }
 });
+router.put("/rate/:borrowId", async (req, res) => {
+    try {
+      const { borrowId } = req.params;
+      const { rating } = req.body;
+  
+      if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ error: "Invalid rating. Must be between 1 and 5." });
+      }
+  
+      const borrowEntry = await Borrow.findById(borrowId);
+      if (!borrowEntry) {
+        return res.status(404).json({ error: "Borrow entry not found." });
+      }
+  
+      if (borrowEntry.status !== "returned") {
+        return res.status(400).json({ error: "You can only rate books after returning them." });
+      }
+  
+      borrowEntry.rating = rating;
+      await borrowEntry.save();
+  
+      res.json({ message: "Rating submitted successfully!", borrowEntry });
+    } catch (error) {
+      console.error("Error updating rating:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 
 // Return a book
 router.put("/return/:borrowId", async (req, res) => {

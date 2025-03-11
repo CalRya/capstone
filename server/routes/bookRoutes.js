@@ -12,6 +12,12 @@ const storage = multer.diskStorage({
     },
 });
 
+const calculateAverageRating = (ratings) => {
+    if (!ratings.length) return 0;
+    const sum = ratings.reduce((acc, rating) => acc + rating, 0);
+    return (sum / ratings.length).toFixed(1);
+};
+
 const upload = multer({ storage: storage });
 
 // 📌 Fetch all books
@@ -59,6 +65,67 @@ router.post("/borrow/:bookId", async (req, res) => {
         res.status(500).json({ message: "Error borrowing book", error });
     }
 });
+
+router.post("/books/:id/rate", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId, rating } = req.body;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: "Invalid rating. Must be 1-5." });
+        }
+
+        const book = await Book.findById(id);
+        if (!book) {
+            return res.status(404).json({ error: "Book not found" });
+        }
+
+        // ✅ Check if user already rated & update
+        const existingRating = book.ratings.find(r => r.user.toString() === userId);
+        if (existingRating) {
+            existingRating.rating = rating;
+        } else {
+            book.ratings.push({ user: userId, rating });
+        }
+
+        // ✅ Recalculate average rating
+        const totalRatings = book.ratings.length;
+        const totalScore = book.ratings.reduce((acc, r) => acc + r.rating, 0);
+        book.averageRating = totalScore / totalRatings;
+
+        await book.save();
+        res.json({ message: "Rating updated", averageRating: book.averageRating });
+
+    } catch (error) {
+        console.error("❌ Error updating rating:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+router.post("/rate/:bookId", async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        const { rating } = req.body;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ message: "Rating must be between 1 and 5" });
+        }
+
+        const book = await Book.findById(bookId);
+        if (!book) return res.status(404).json({ message: "Book not found" });
+
+        book.ratings.push(rating);
+        book.averageRating = calculateAverageRating(book.ratings);
+        await book.save();
+
+        res.status(200).json({ message: "Rating added!", averageRating: book.averageRating });
+    } catch (error) {
+        console.error("Error adding rating:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 
 
 // Serve uploaded images as static files

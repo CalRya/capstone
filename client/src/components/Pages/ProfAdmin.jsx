@@ -1,5 +1,4 @@
-import Navbar from "../Navbar/Navbar";
-import BorrowBooks from "../DigiLib/borrowedBooks";
+import Navbar from "../Navbar/NavbarAdmin";
 import UserProfile from "../Profile/UserProfile";
 
 

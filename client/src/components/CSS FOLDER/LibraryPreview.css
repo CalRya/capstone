@@ -1,0 +1,108 @@
+.library-preview {
+    background: #f5ece2;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px auto;
+    max-width: 95%;
+}
+
+.library-preview h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #5c3d2e;
+    margin-bottom: 15px;
+    text-align: left;
+    padding-left: 15px;
+}
+
+/* Scrollable container */
+.book-preview-container {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 15px;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #c49a6c transparent;
+    white-space: nowrap;
+}
+
+/* Hide scrollbar for Chrome & Edge */
+.book-preview-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.book-preview-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.book-preview-container::-webkit-scrollbar-thumb {
+    background: #b77b43;
+    border-radius: 10px;
+}
+
+/* Book list */
+.book-preview-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    min-width: 100%;
+    align-items: center; /* Ensures alignment */
+    justify-content: center; /* Centers content */
+}
+
+/* Individual book cards */
+.book-card {
+    flex: 0 0 auto;
+    width: 140px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: scale(1.05);
+}
+
+.book-cover {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.book-title {
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: bold;
+    color: #5c3d2e;
+}
+
+/* Centered "More Books" Button */
+.more-books-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.more-books-btn {
+    padding: 10px 20px;
+    background: #b77b43;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.more-books-btn:hover {
+    background: #965a2b;
+}

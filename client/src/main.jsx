@@ -18,6 +18,7 @@ import Prof from './components/Pages/Prof';
 import ContactPage from './components/Pages/Contacts';
 import SettingsP from './components/Pages/Settings';
 import AboutUs from './components/Pages/AboutPage';
+import History from './components/Pages/History';
 
 import CourierPage from './components/Pages/CourierHome';
 
@@ -25,7 +26,8 @@ import AdminPage from './components/Pages/ADMIN/AdminPage';
 import ManageUsers from './components/Admin/Admin';
 import DigiLibAdmin from './components/Pages/ADMIN/DigiLibAdmin';
 import LibAdmin from './components/Pages/ADMIN/LibAdmin'
-import SettingsAdmin from './components/Pages/ADMIN/SettingsAdmin';
+import AboutAdmin from './components/Pages/ADMIN/AboutAdmin';
+import ProfAdmin from './components/Pages/ProfAdmin';
   
 
 const router = createBrowserRouter([
@@ -96,10 +98,17 @@ const router = createBrowserRouter([
     element: <LibAdmin/>,
   },
   {
-    path: "settingsadmin",
-    element: <SettingsAdmin/>,
+    path: "aboutadmin",
+    element: <AboutAdmin/>,
   },
-
+  {
+    path: "bookhistory",
+    element: <History/>,
+  }, 
+  {
+    path: "profadmin",
+    element: <ProfAdmin/>,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

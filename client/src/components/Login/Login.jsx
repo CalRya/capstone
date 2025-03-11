@@ -35,8 +35,8 @@ function Login() {
                 localStorage.setItem("currentUser", JSON.stringify(userData));
 
                 switch (userData.role) {
-                    case 'admin': navigate('/homeadmin'); break;
-                    case 'librarian': navigate('/librarian'); break;
+                    case 'admin': navigate('/admin'); break;
+                    case 'librarian': navigate('/homeadmin'); break;
                     case 'courier': navigate('/courier-dashboard'); break;
                     default: navigate('/home');
                 }

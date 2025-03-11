@@ -30,7 +30,6 @@
 
     /* --- Ensure Navbar is Visible --- */
     .digilib-container {
-        padding-top: 80px; /* ✅ Adds space below navbar */
         max-width: 90%;
         margin: 0 auto;
         text-align: center;

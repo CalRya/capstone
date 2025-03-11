@@ -12,11 +12,6 @@ const App = () => {
     <div>
       <NavbarAdmin />
       <Hero />
-      <div className="container">
-      <Title subTitle='These images are placeholders' Title='Look at Here!'/>
-      <Programs/>
-      <About/>
-      </div>
     </div>
   );
 };

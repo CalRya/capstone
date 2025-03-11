@@ -1,34 +1,298 @@
+/* 🌟 Navbar Styling */
 nav {
     width: 100%;
-    height: 80px; /* Adjust according to your design */
+    height: 80px;
     background-color: #5a3e2b;
-    z-index: 1000; /* Ensures navbar stays above other content */
+    z-index: 1000;
     color: #fff;
-    padding: 4px 0;
+    padding: 10px 30px;
     position: fixed;
     top: 0;
     left: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+/* 📌 Logo */
+.logo {
+    width: 120px;
+    height: auto;
+    margin-right: 20px; /* Adds space between logo and menu */
+    flex-shrink: 0; /* Prevents the logo from resizing */
+}
+
+/* 🔽 Navbar Container */
+.navbar-container {
+    display: flex;/* 🔹 Navbar Styling */
+.navbar {
+    width: 100%;
+    height: 80px;
+    background-color: #5a3e2b;
+    color: white;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease-in-out;
+}
+
+/* 🌑 Sticky Navbar */
+.dark-nav {
+    background: #d39d7b;
+}
+
+/* 🔹 Logo */
+.nav-left {
+    display: flex;
+    align-items: center;
 }
 
 .logo {
-    width: 110px;
+    width: 120px;
+    height: auto;
+}
+
+/* 🔍 Search Bar */
+.search-bar {
+    width: 250px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    outline: none;
+    background: #fff;
+    color: #5a3e2b;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar::placeholder {
+    color: #b77b43;
+}
+
+.search-bar:focus {
+    width: 280px;
+    border-color: #b77b43;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔹 Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    transition: transform 0.2s;
+}
+
+.nav-links li:hover {
+    transform: translateY(-2px);
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 6px 10px;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-links li a:hover {
+    color: #f5d0a9;
+}
+
+/* Profile Link */
+.profile-link {
+    color: rgb(186, 138, 114);
+}
+
+/* 🔘 Button Styling */
+.btn {
+    background-color: #e3a87c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    font-weight: bold;
+}
+
+.btn a {
+    text-decoration: none;
+    color: #5a3e2b;
+}
+
+.btn:hover {
+    background-color: #c97b50;
+}
+
+/* ✨ Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* 🔽 Navbar Links */
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allows the menu to take up space */
+    justify-content: center; /* Centers the menu */
 }
 
 nav ul li {
-    display: inline-block;
-    list-style: none;
-    margin: 5px 20px;
     font-size: 16px;
+    transition: transform 0.2s, opacity 0.3s ease-in-out;
 }
 
+nav ul li:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+nav ul li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #f5d0a9;
+}
+
+/* 🌑 Darker Navbar on Scroll */
 .dark-nav {
     background: #d39d7b;
-    transition: 0.5s;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* 🔍 Search Bar */
+.search-bar {
+    width: 250px;
+    padding: 8px 14px;
+    font-size: 14px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    outline: none;
+    background: #fff;
+    color: #5a3e2b;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+}
 
+.search-bar::placeholder {
+    color: #b77b43;
+    opacity: 0.8;
+}
 
+.search-bar:focus {
+    width: 280px;
+    border-color: #b77b43;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔘 Button Styling */
+.btn {
+    background: linear-gradient(to right, #e3a87c, #d08c6e);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: linear-gradient(to right, #c97b50, #b26a50);
+    transform: scale(1.05);
+}
+
+/* ✨ Responsive Design */
+@media (max-width: 900px) {
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 200px;
+        text-align: center;
+    }
+}

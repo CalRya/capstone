@@ -20,7 +20,7 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden; /* Prevents horizontal overflow */
-  padding-top: 120px; /* Pushes all content down below the navbar */
+
 }
 
 /* Heading */

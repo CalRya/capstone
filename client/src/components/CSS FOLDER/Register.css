@@ -9,6 +9,7 @@ body {
     margin: 0;
 }
 
+/* Container to properly contain everything */
 section {
     background: #fff8f0;
     padding: 2rem;
@@ -16,14 +17,21 @@ section {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 400px;
+    max-width: 100%; /* Prevents overflow on smaller screens */
+    box-sizing: border-box;
+    overflow: hidden; /* Prevents text from overflowing */
+    word-wrap: break-word; /* Ensures text stays inside */
 }
 
+/* Headings */
 h1 {
     color: #8b5e3b;
     font-size: 2rem;
     margin-bottom: 1rem;
+    word-wrap: break-word; /* Prevents long text from overflowing */
 }
 
+/* Form Elements */
 label {
     display: block;
     text-align: left;
@@ -41,6 +49,8 @@ input {
     outline: none;
     background: #fdf6ee;
     transition: 0.3s ease-in-out;
+    box-sizing: border-box;
+    word-break: break-word; /* Prevents long input text from overflowing */
 }
 
 input:focus {
@@ -48,6 +58,7 @@ input:focus {
     box-shadow: 0px 0px 5px rgba(139, 94, 59, 0.3);
 }
 
+/* Button */
 button {
     width: 100%;
     padding: 12px;
@@ -60,21 +71,26 @@ button {
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
+    box-sizing: border-box;
 }
 
 button:hover {
     background: #704c2f;
 }
 
+/* Error Message */
 .errmsg {
-    color: #c0392b;
-    font-weight: bold;
-    background: #f9e0e0;
+    color: red;
+    background-color: #ffecec;
+    border: 1px solid red;
     padding: 10px;
-    border-radius: 8px;
     margin-bottom: 10px;
+    text-align: center;
+    border-radius: 8px;
+    word-wrap: break-word;
 }
 
+/* Links */
 .line {
     margin-top: 15px;
 }
@@ -91,10 +107,12 @@ button:hover {
     text-decoration: underline;
 }
 
+/* Paragraph */
 p {
     color: #704c2f;
     font-size: 1rem;
     margin-top: 15px;
+    word-wrap: break-word;
 }
 
 p a {
@@ -109,18 +127,8 @@ p a:hover {
     text-decoration: underline;
 }
 
-.errmsg {
-    color: red;
-    background-color: #ffecec;
-    border: 1px solid red;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: block;
-    text-align: center;
-}
-
+/* Utility */
 .offscreen {
     position: absolute;
     left: -9999px;
 }
-

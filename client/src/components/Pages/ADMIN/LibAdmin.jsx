@@ -1,34 +1,26 @@
-import React, { useState } from "react"; // ✅ Added useState import
+import React, { useState } from "react";
 import BookList from "../../Admin/booklist";
 import EditBook from "../../Admin/editbook";
 import BookListEdit from "../../Admin/BookListEdit";
-import Navbar from "../../Navbar/NavbarAdmin";
-import BookDisplay from "../../DigiLib/bookDisplay";
-
-
-
+import NavbarAdmin from "../../Navbar/NavbarAdmin";
 
 function LibraryPage() {
   const [selectedBook, setSelectedBook] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleBookUpdated = () => {
-    setSelectedBook(null); // Close edit form after update
+    setSelectedBook(null);
   };
 
   return (
     <main className="App">
-      <Navbar />
-      <BookList/>
+      <NavbarAdmin onSearch={setSearchQuery} />
+      <BookList />
       {!selectedBook ? (
-        <BookListEdit onEdit={setSelectedBook} />
+        <BookListEdit onEdit={setSelectedBook} searchQuery={searchQuery} /> 
       ) : (
-        <EditBook
-          bookToEdit={selectedBook}
-          onClose={() => setSelectedBook(null)}
-          onBookUpdated={handleBookUpdated}
-        />
+        <EditBook bookToEdit={selectedBook} onClose={() => setSelectedBook(null)} onBookUpdated={handleBookUpdated} />
       )}
-      <BookDisplay />
     </main>
   );
 }

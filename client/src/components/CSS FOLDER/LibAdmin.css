@@ -38,10 +38,7 @@
   }
   
   /* Ensures content starts below navbar */
-  body {
-    padding-top: 80px; /* Pushes everything down */
-  }
-  
+ 
   /* Ensure EditBook form is properly spaced */
   .book-form-container {
     width: 80%;

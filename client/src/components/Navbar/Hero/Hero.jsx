@@ -1,19 +1,32 @@
-import React from 'react'
-import '../../CSS FOLDER/Hero.css'
-import dark_arrow from '../../../assets/arrow.png'
+import React from "react";
+import { Link } from "react-router-dom"; // Import Link for navigation
+import "../../CSS FOLDER/Hero.css";
+import dark_arrow from "../../../assets/arrow.png";
+import logo from "../../../assets/logo.png"; // Ensure you have a logo in assets
 
 const Hero = () => {
   return (
-    <div className= 'Hero container'>
-      <div className="hero-text">
-        <h1> Calling all Literature Nerds! </h1> <br/>
-        <p> The Digital Library provides access to a wide range of resources for students who have a unique passion for literature, those in need of academic resources, as well those who might find themselves developing an interest for such topics.
-        </p>
-        <br/>
-        <button className= 'btn'> Explore more ! <img src={dark_arrow} alt=""></img> </button>
+    <div className="hero container">
+      <div className="hero-content">
+        {/* 🔥 Added Logo */}
+        <img src={logo} alt="Library Logo" className="hero-logo" />
+
+        <div className="hero-text">
+          <h1>Welcome to Our Digital Library</h1>
+          <p>
+            Unlock a world of literature at your fingertips! Whether you're a
+            passionate book lover, a student searching for academic resources,
+            or simply curious, our library has something for you.
+          </p>
+
+          {/* ✅ Link Button to Library Page */}
+          <Link to="/lib" className="btn">
+            Explore More 
+          </Link>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

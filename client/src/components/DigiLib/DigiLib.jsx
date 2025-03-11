@@ -1,18 +1,27 @@
-import React from 'react'
-import '../CSS FOLDER/DigiLib.css'
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar'; 
 import BookDisplay from './bookDisplay';
-import Booklist from '../Admin/booklist';
-
 
 const DigiLib = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+
+  // Update URL when searchQuery changes
+  useEffect(() => {
+    const newParams = new URLSearchParams();
+    if (searchQuery) newParams.set('q', searchQuery);
+    window.history.replaceState(null, '', `/lib?${newParams.toString()}`);
+  }, [searchQuery]);
+
   return (
     <div>
-        <br/>
-        <BookDisplay/>
+      <Navbar onSearch={setSearchQuery} /> {/* ✅ Navbar updates search query */}
+      <BookDisplay searchQuery={searchQuery} /> {/* ✅ Live filtering */}
     </div>
-  )
-}
+  );
+};
 
-export default DigiLib
-
-
+export default DigiLib;
+  
