@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import './components/CSS FOLDER/index.css';
 import App from './App';
@@ -21,148 +18,52 @@ import AboutUs from './components/Pages/AboutPage';
 import History from './components/Pages/History';
 
 import CourierPage from './components/Pages/CourierHome';
-
-import CourierHome from './components/Pages/Courier/courierHome'
-import CourierLibrary from './components/Pages/Courier/courierLibrary'
-import CourierHistory from './components/Pages/Courier/courierHistory'
-import CourierGamehome from './components/Pages/Courier/courierGamehome'
-import CourierProfile from './components/Pages/Courier/courierProfile'
-import CourierArticles from './components/Pages/Courier/courierviewPage'
+import CourierHome from './components/Pages/Courier/courierHome';
+import CourierLibrary from './components/Pages/Courier/courierLibrary';
+import CourierHistory from './components/Pages/Courier/courierHistory';
+import CourierGamehome from './components/Pages/Courier/courierGamehome';
+import CourierProfile from './components/Pages/Courier/courierProfile';
+import CourierArticles from './components/Pages/Courier/courierviewPage';
 
 import AdminPage from './components/Pages/ADMIN/AdminPage';
 import ManageUsers from './components/Admin/Admin';
 import DigiLibAdmin from './components/Pages/ADMIN/DigiLibAdmin';
-import LibAdmin from './components/Pages/ADMIN/LibAdmin'
+import LibAdmin from './components/Pages/ADMIN/LibAdmin';
 import AboutAdmin from './components/Pages/ADMIN/AboutAdmin';
 import ProfAdmin from './components/Pages/ProfAdmin';
-
-import ManageAdmin from './components/Pages/ADMIN/RealAdmin'
-  
+import ManageAdmin from './components/Pages/ADMIN/RealAdmin';
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RegisterApp/>,
-  },
-  {
-    path: "login",
-    element: <Login/>,
-  },
-
-  //STUDENT PAGES
-  {
-    path: "home",
-    element: <HomePage/>,
-  },
-  {
-    path: "lib",
-    element: <LibraryPage/>,
-  },
-  {
-    path: "gamesh",
-    element: <GameHome/>,
-  },
-  {
-    path: "prof",
-    element: <Prof/>,
-  },
-  {
-    path: "contactpage",
-    element: <ContactPage/>,
-  },
-
-  {
-    path: "settingsp",
-    element: <SettingsP/>,
-  },
-  {
-    path: "aboutus",
-    element: <AboutUs/>,
-  },
-
-  // COURIER PAGES
-  {
-    path: "courierp",
-    element: <CourierArticles/>,
-  },
-
-  // ADMIN PAGES
-  
-  {
-    path: "homeadmin",
-    element: <AdminPage/>,
-  },
-
-    // LIBRARIAN PAGES
-  {
-    path: "manageusers",
-    element: <ManageUsers/>,
-  },
-  {
-    path: "digilibadmin",
-    element: <DigiLibAdmin/>,
-  },
-  {
-    path: "libadmin",
-    element: <LibAdmin/>,
-  },
-  {
-    path: "aboutadmin",
-    element: <AboutAdmin/>,
-  },
-  {
-    path: "bookhistory",
-    element: <History/>,
-  }, 
-  {
-    path: "profadmin",
-    element: <ProfAdmin/>,
-  },
-  {
-    path: "adminmanage",
-    element: <ManageAdmin/>,
-  },
-  {
-    path: "courierhome",
-    element: <CourierHome/>,
-  },
-  {
-    path: "courierlibrary",
-    element: <CourierLibrary/>,
-  },
-  {
-    path: "courierhistory",
-    element: <CourierHistory/>,
-  },
-  {
-    path: "couriergamehome",
-    element: <CourierGamehome/>,
-  },
-  {
-    path: "courierprofile",
-    element: <CourierProfile/>,
-  },
-  {
-    path: "courierarticles",
-    element: <CourierPage/>,
-  },
+  { path: "/", element: <RegisterApp /> },
+  { path: "login", element: <Login /> },
+  { path: "home", element: <HomePage /> },
+  { path: "lib", element: <LibraryPage /> },
+  { path: "gamesh", element: <GameHome /> },
+  { path: "prof", element: <Prof /> },
+  { path: "contactpage", element: <ContactPage /> },
+  { path: "settingsp", element: <SettingsP /> },
+  { path: "aboutus", element: <AboutUs /> },
+  { path: "courierp", element: <CourierArticles /> },
+  { path: "homeadmin", element: <AdminPage /> },
+  { path: "manageusers", element: <ManageUsers /> },
+  { path: "digilibadmin", element: <DigiLibAdmin /> },
+  { path: "libadmin", element: <LibAdmin /> },
+  { path: "aboutadmin", element: <AboutAdmin /> },
+  { path: "bookhistory", element: <History /> },
+  { path: "profadmin", element: <ProfAdmin /> },
+  { path: "adminmanage", element: <ManageAdmin /> },
+  { path: "courierhome", element: <CourierHome /> },
+  { path: "courierlibrary", element: <CourierLibrary /> },
+  { path: "courierhistory", element: <CourierHistory /> },
+  { path: "couriergamehome", element: <CourierGamehome /> },
+  { path: "courierprofile", element: <CourierProfile /> },
+  { path: "courierarticles", element: <CourierPage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
-
-ReactDOM.render(
-  <React.StrictMode>
-    <AuthProvider>
-    <App />
-    </AuthProvider>
-    
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-
-
