@@ -5,12 +5,25 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    console.log("✅ Received User Data:", user);
+}, [user]);
+
   
   useEffect(() => {
-    axios.get("http://localhost:3004/api/users/{userID}") // Replace with actual user ID
-      .then(res => setUser(res.data))
-      .catch(err => console.error("Error fetching profile:", err));
-  }, []);
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3004/api/users/${userId}`);
+        setUser(res.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+  
+    fetchUser();
+  }, [user, isPremium]);  // ✅ Refetch user when premium status changes
+  
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];

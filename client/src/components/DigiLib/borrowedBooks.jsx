@@ -15,7 +15,6 @@ const BorrowedBooks = ({ id: propId, onRatingUpdate }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ✅ Fetch borrowed books
   useEffect(() => {
     const fetchBorrowedBooks = async () => {
       if (!id) {
@@ -30,7 +29,7 @@ const BorrowedBooks = ({ id: propId, onRatingUpdate }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setBorrowedBooks(response.data);
+        setBorrowedBooks(response.data || []);
         console.log("✅ Borrowed Books Response:", response.data);
       } catch (error) {
         console.error("❌ Error fetching borrowed books:", error);
@@ -45,49 +44,44 @@ const BorrowedBooks = ({ id: propId, onRatingUpdate }) => {
 
   // ✅ Handles book rating submission
   const handleRating = async (borrowId, rating) => {
+    if (!borrowId || !rating || rating < 1 || rating > 5) {
+      alert("❌ Invalid rating. Please select a number between 1 and 5.");
+      return;
+    }
+
     try {
-      console.log(`📤 Submitting rating: ${rating} for borrow ID: ${borrowId}`);  // Log rating and borrowId
-  
-      // Get the associated book ID from the borrowed book
-      const borrowedBook = borrowedBooks.find((borrow) => borrow._id === borrowId);
-      const bookId = borrowedBook?.book?._id;
-  
-      if (!bookId) {
-        alert("Book ID not found!");
-        return;
-      }
+      console.log(`📤 Submitting rating: ${rating} for borrow ID: ${borrowId}`);
 
       const response = await axios.put(
         `http://localhost:3004/api/rate/${borrowId}`,
         { rating },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
         }
       );
-  
+
       console.log("✅ Rating submitted successfully:", response.data);
-  
-      // Update UI instantly
+
       setBorrowedBooks((prevBooks) =>
         prevBooks.map((borrow) =>
           borrow._id === borrowId ? { ...borrow, rating } : borrow
         )
       );
-  
-      // Notify `BookDisplay.jsx` to refresh books & update ratings
+
       if (onRatingUpdate) {
         console.log("🔔 Triggering onRatingUpdate...");
         onRatingUpdate();
       }
-  
+
       alert(response.data.message || "Rating submitted successfully!");
     } catch (error) {
       console.error("❌ Error submitting rating:", error);
-      alert("You've already rated this book!.");
+      alert(error.response?.data?.message || "Error.");
     }
-};
-
-  
+  };
 
   return (
     <div className="borrowed-books-container">
@@ -99,36 +93,43 @@ const BorrowedBooks = ({ id: propId, onRatingUpdate }) => {
       ) : borrowedBooks.length > 0 ? (
         <ul className="borrowed-books-list">
           {borrowedBooks.map((borrow) => {
+            if (!borrow.book) return null; // Ensure book exists
+
             const today = new Date();
             const dueDate = borrow.dueDate ? new Date(borrow.dueDate) : null;
             const returnDate = borrow.returnDate ? new Date(borrow.returnDate) : null;
             let statusText = borrow.status;
             let statusClass = "";
 
-            switch (borrow.status) {
-              case "pending":
-                statusText = "Pending";
-                statusClass = "status-pending";
-                break;
-              case "approved":
-                statusText = today > dueDate ? "Overdue" : "Borrowed";
-                statusClass = today > dueDate ? "status-overdue" : "status-borrowed";
-                break;
-              case "returned":
-                statusText = "Returned";
-                statusClass = "status-returned";
-                break;
-              case "overdue":
-                statusText = "Overdue";
-                statusClass = "status-overdue";
-                break;
-              case "denied":
-                statusText = "Denied";
-                statusClass = "status-denied";
-                break;
-              default:
-                statusText = "Unknown";
-                statusClass = "status-unknown";
+            if (borrow.status === "approved" && dueDate && today > dueDate) {
+              statusText = "Overdue";
+              statusClass = "status-overdue";
+            } else {
+              switch (borrow.status) {
+                case "pending":
+                  statusText = "Pending";
+                  statusClass = "status-pending";
+                  break;
+                case "approved":
+                  statusText = "Borrowed";
+                  statusClass = "status-borrowed";
+                  break;
+                case "returned":
+                  statusText = "Returned";
+                  statusClass = "status-returned";
+                  break;
+                case "overdue":
+                  statusText = "Overdue";
+                  statusClass = "status-overdue";
+                  break;
+                case "denied":
+                  statusText = "Denied";
+                  statusClass = "status-denied";
+                  break;
+                default:
+                  statusText = "Unknown";
+                  statusClass = "status-unknown";
+              }
             }
 
             return (
@@ -161,22 +162,24 @@ const BorrowedBooks = ({ id: propId, onRatingUpdate }) => {
 
                   {/* ⭐ Rating Section */}
                   {borrow.status === "returned" ? (
-                    <div className="rating-container">
-                      <p><strong>Rate this book:</strong></p>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${borrow.rating >= star ? "filled" : ""}`}
-                          onClick={() => handleRating(borrow._id, star)}
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                  ) : borrow.rating ? (
-                    <p className="rating-display">
-                      <strong>Your Rating:</strong> {"★".repeat(borrow.rating)}
-                    </p>
+                    borrow.rating ? (
+                      <p className="rating-display">
+                        <strong>Already Rated:</strong> {"★".repeat(borrow.rating)}
+                      </p>
+                    ) : (
+                      <div className="rating-container">
+                        <p><strong>Rate this book:</strong></p>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className="star"
+                            onClick={() => handleRating(borrow._id, star)}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                    )
                   ) : null}
                 </div>
               </li>

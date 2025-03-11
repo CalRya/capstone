@@ -1,0 +1,16 @@
+.admin-dashboard {
+    padding: 40px;
+    background: #fdf8f2;
+}
+
+.dashboard-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px;
+    border: 2px solid #b77b43;
+    border-radius: 8px;
+}

@@ -22,12 +22,21 @@ import History from './components/Pages/History';
 
 import CourierPage from './components/Pages/CourierHome';
 
+import CourierHome from './components/Pages/Courier/courierHome'
+import CourierLibrary from './components/Pages/Courier/courierLibrary'
+import CourierHistory from './components/Pages/Courier/courierHistory'
+import CourierGamehome from './components/Pages/Courier/courierGamehome'
+import CourierProfile from './components/Pages/Courier/courierProfile'
+import CourierArticles from './components/Pages/Courier/courierviewPage'
+
 import AdminPage from './components/Pages/ADMIN/AdminPage';
 import ManageUsers from './components/Admin/Admin';
 import DigiLibAdmin from './components/Pages/ADMIN/DigiLibAdmin';
 import LibAdmin from './components/Pages/ADMIN/LibAdmin'
 import AboutAdmin from './components/Pages/ADMIN/AboutAdmin';
 import ProfAdmin from './components/Pages/ProfAdmin';
+
+import ManageAdmin from './components/Pages/ADMIN/RealAdmin'
   
 
 const router = createBrowserRouter([
@@ -74,7 +83,7 @@ const router = createBrowserRouter([
   // COURIER PAGES
   {
     path: "courierp",
-    element: <CourierPage/>,
+    element: <CourierArticles/>,
   },
 
   // ADMIN PAGES
@@ -108,6 +117,34 @@ const router = createBrowserRouter([
   {
     path: "profadmin",
     element: <ProfAdmin/>,
+  },
+  {
+    path: "adminmanage",
+    element: <ManageAdmin/>,
+  },
+  {
+    path: "courierhome",
+    element: <CourierHome/>,
+  },
+  {
+    path: "courierlibrary",
+    element: <CourierLibrary/>,
+  },
+  {
+    path: "courierhistory",
+    element: <CourierHistory/>,
+  },
+  {
+    path: "couriergamehome",
+    element: <CourierGamehome/>,
+  },
+  {
+    path: "courierprofile",
+    element: <CourierProfile/>,
+  },
+  {
+    path: "courierarticles",
+    element: <CourierPage/>,
   },
 ]);
 

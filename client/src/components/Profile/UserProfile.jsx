@@ -44,6 +44,9 @@ const Profile = ({ userId }) => {
     fetchUserData();
   }, [userId]);
 
+  // 📌 Determine user plan
+  const userPlan = userData?.premium?.status === "lifetime" ? "Lifetime Premium" : "Basic User";
+
   return (
     <div style={styles.pageContainer}>
       <div style={styles.profileContainer}>
@@ -63,6 +66,9 @@ const Profile = ({ userId }) => {
 
             <label style={styles.label}>Role:</label>
             <p style={styles.text}>{userData.role}</p> {/* ✅ Shows user role */}
+
+            <label style={styles.label}>Plan:</label>
+            <p style={styles.text}>{userPlan}</p> {/* ✅ Shows premium/basic status */}
           </div>
         ) : (
           <p style={styles.error}>No user data available.</p>
@@ -78,7 +84,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh", // Take full viewport height
+    height: "100vh",
   },
   profileContainer: {
     background: "linear-gradient(145deg, #fff8f3, #f2e1d5)",
@@ -86,7 +92,7 @@ const styles = {
     borderRadius: "15px",
     boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.15)",
     maxWidth: "400px",
-    width: "100%", // Ensure responsiveness
+    width: "100%",
     textAlign: "center",
     fontFamily: "'Poppins', sans-serif",
   },

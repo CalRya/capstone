@@ -4,9 +4,7 @@
     padding: 100px;
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
- 
 }
-
 
 /* 📚 Book List */
 .book-list {
@@ -112,6 +110,7 @@
     border-radius: 20px; /* Rounded modal */
     text-align: center;
     position: relative;
+    color: #5c3d2e;
     max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
@@ -154,6 +153,8 @@
     padding: 8px 15px;
     color: #5c3d2e;
     border-radius: 10px; /* Rounded text box */
+    white-space: pre-wrap; /* Ensures that new lines in description are preserved */
+    word-wrap: break-word; /* Prevents long words from breaking the layout */
 }
 
 .modal-content::-webkit-scrollbar {
@@ -187,4 +188,79 @@
 .book-display-container {
     padding-top: 100px; /* Adjust based on navbar height */
 }
+
+/* 📌 Modal Book Description */
+.book-description {
+    text-align: justify;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 8px 15px;
+    color: #5c3d2e;
+    border-radius: 10px;
+    white-space: pre-wrap;  /* Preserves newline characters */
+    word-wrap: break-word;  /* Prevents long words from breaking the layout */
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* 📌 Custom Scrollbar for Description */
+.book-description::-webkit-scrollbar {
+    width: 8px;  /* Set the width of the scrollbar */
+}
+
+.book-description::-webkit-scrollbar-thumb {
+    background-color: #b77b43; /* Golden brown color */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.book-description::-webkit-scrollbar-track {
+    background: #f5e6d6; /* Light beige background for the scrollbar track */
+    border-radius: 5px;
+}
+
+.book-description::-webkit-scrollbar-thumb:hover {
+    background-color: #965a2b; /* Darker golden brown when hovered */
+}
+
+/* 📌 Sorting Dropdown (Aligned Left) */
+.sort-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Moves the dropdown to the left */
+    gap: 10px; /* Space between label and dropdown */
+    margin-bottom: 20px;
+    padding-left: 20px; /* Ensures spacing from the edge */
+}
+
+/* 📌 Sorting Label */
+.sort-container label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #5c3d2e;
+    white-space: nowrap;
+}
+
+/* 📌 Sorting Dropdown Button */
+.sort-container select {
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+
+    border: 2px solid #b77b43; /* Brown border */
+    color: #5c3d2e;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    appearance: none; /* Removes default dropdown styling */
+    position: relative;
+}
+
+/* 📌 Dropdown Hover & Focus Effect */
+.sort-container select:hover,
+.sort-container select:focus {
+    background: #ebd5c2; /* Slightly darker beige */
+    border-color: #965a2b; /* Darker brown */
+}
+
+/* 📌 Dr
 

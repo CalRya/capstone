@@ -5,6 +5,7 @@ import EditBook from '../Admin/editbook';
 import BookDisplay from '../DigiLib/bookDisplay';
 import NavbarAdmin from '../Navbar/NavbarAdmin';
 import ApproveBorrowRequests from './approvedBorrowBooks';
+import LibrarianPanel from './LibrarianPanel';
 
 const DigiLib = () => {
   return (
@@ -13,6 +14,7 @@ const DigiLib = () => {
       <BookList/>
       <EditBook/>
       <ApproveBorrowRequests />
+    
       
     </div>
   );

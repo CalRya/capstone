@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../CSS FOLDER/booklist.css";
 
-
 const AddBook = ({ onBookAdded }) => {
   const [book, setBook] = useState({
     bookID: "",
@@ -83,38 +82,46 @@ const AddBook = ({ onBookAdded }) => {
     }
   };
 
- return (
-  <div className="add-book-container">
-    <h2>Add a New Book</h2>
-    <form onSubmit={handleSubmit} encType="multipart/form-data" className="add-book-form">
-      <input type="text" name="bookID" value={book.bookID} onChange={handleChange} placeholder="Book ID" required />
-      <input type="text" name="bookTitle" value={book.bookTitle} onChange={handleChange} placeholder="Book Title" required />
-      <input type="text" name="bookAuthor" value={book.bookAuthor} onChange={handleChange} placeholder="Author" required />
-      <input type="text" name="bookDescription" value={book.bookDescription} onChange={handleChange} placeholder="Description" required />
-      <input type="text" name="bookGenre" value={book.bookGenre} onChange={handleChange} placeholder="Genre" required />
+  return (
+    <div className="add-book-container">
+      <h2>Add a New Book</h2>
+      <form onSubmit={handleSubmit} encType="multipart/form-data" className="add-book-form">
+        <input type="text" name="bookID" value={book.bookID} onChange={handleChange} placeholder="Book ID" required />
+        <input type="text" name="bookTitle" value={book.bookTitle} onChange={handleChange} placeholder="Book Title" required />
+        <input type="text" name="bookAuthor" value={book.bookAuthor} onChange={handleChange} placeholder="Author" required />
+        
+        {/* Updated Description Input to Textarea */}
+        <textarea
+          name="bookDescription"
+          value={book.bookDescription}
+          onChange={handleChange}
+          placeholder="Description"
+          required
+          rows="6"
+          cols="50"
+        ></textarea>
 
-      <label>Upload Book Cover:</label>
-      <input type="file" accept="image/*" onChange={handleFileChange} required />
+        <input type="text" name="bookGenre" value={book.bookGenre} onChange={handleChange} placeholder="Genre" required />
 
-      <select name="bookPlatform" value={book.bookPlatform} onChange={handleChange} required>
-        <option value="Physical">Physical</option>
-        <option value="Digital">Digital</option>
-      </select>
+        <label>Upload Book Cover:</label>
+        <input type="file" accept="image/*" onChange={handleFileChange} required />
 
-      <div className="checkbox-container">
-        <label>
-          Available:
-          <input type="checkbox" name="bookAvailability" checked={book.bookAvailability} onChange={handleChange} />
-        </label>
-      </div>
+        <select name="bookPlatform" value={book.bookPlatform} onChange={handleChange} required>
+          <option value="Physical">Physical</option>
+          <option value="Digital">Digital</option>
+        </select>
 
-      <button type="submit">Add Book</button>
-    </form>
-  </div>
-);
+        <div className="checkbox-container">
+          <label>
+            Available:
+            <input type="checkbox" name="bookAvailability" checked={book.bookAvailability} onChange={handleChange} />
+          </label>
+        </div>
 
-  
-  
+        <button type="submit">Add Book</button>
+      </form>
+    </div>
+  );
 };
 
 export default AddBook;

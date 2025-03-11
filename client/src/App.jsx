@@ -6,6 +6,7 @@ import Programs from './components/Navbar/Programs/Programs';
 import Title from './components/Navbar/Title/Title';
 import About from './components/Navbar/About/About';
 import LibraryPreview from './components/DigiLib/LibraryPreview';
+import ArticlePreview from './components/DigiLib/ArticlePreview'
 
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <Navbar />
       <Hero/>
       <LibraryPreview/>
+      <ArticlePreview/>
     </div>
   );
 };

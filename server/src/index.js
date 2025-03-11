@@ -10,9 +10,12 @@ const bookRoutes = require("../routes/bookRoutes");
 const adminRoutes = require("../routes/adminRoutes");
 const Book = require("../models/Book");
 const Borrow = require("../models/Borrow");
+const articleRoutes = require("../routes/articleRoutes");
 const borrowRoutes = require("../routes/borrowRoutes");
 const authenticateUser = require("../middleware/authMiddleware");
 const nodemailer = require("nodemailer");
+const Quote = require("../models/Quotes");  // ✅ Use the existing model instead of redefining it
+const premiumRoutes = require("../routes/premiumRoutes");
 
 const calculateLateFee = (dueDate) => {
     const today = new Date();
@@ -128,6 +131,19 @@ app.get("/api/borrow/:user", async (req, res) => {
     }
 });
 
+app.get("/api/user/:id", async (req, res) => {
+    try {
+      const user = await userModel.findById(req.params.id).select("user email role premium");
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+
 // ✅ Borrow a Book
 app.post("/api/borrow/:bookID", async (req, res) => {
     try {
@@ -163,29 +179,59 @@ app.post("/api/borrow/:bookID", async (req, res) => {
     }
 });
 
-// ✅ Return a Borrowed Book
-app.post("/api/return/:borrowId", async (req, res) => {
+app.put("/api/borrow/approve/:borrowId", async (req, res) => {
     try {
         const { borrowId } = req.params;
-        const borrowEntry = await Borrow.findById(borrowId);
 
-        if (!borrowEntry) return res.status(404).json({ message: "Borrow record not found" });
+        const borrowEntry = await Borrow.findById(borrowId);
+        if (!borrowEntry) {
+            return res.status(404).json({ message: "Borrow request not found" });
+        }
+
+        if (borrowEntry.status !== "pending") {
+            return res.status(400).json({ message: "Request is already processed" });
+        }
+
+        borrowEntry.status = "approved";
+        await borrowEntry.save();
+
+        res.status(200).json({ message: "Request approved successfully!", borrow: borrowEntry });
+    } catch (error) {
+        console.error("❌ Error approving borrow request:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// ✅ Return a Borrowed Book
+app.put("/api/borrow/return/:borrowId", async (req, res) => {
+    try {
+        const { borrowId } = req.params;
+
+        // Validate if borrowId is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(borrowId)) {
+            return res.status(400).json({ message: "Invalid borrow ID format" });
+        }
+
+        const borrowEntry = await Borrow.findById(borrowId);
+        if (!borrowEntry) {
+            return res.status(404).json({ message: "Borrow record not found" });
+        }
 
         const lateFee = calculateLateFee(borrowEntry.dueDate);
-
         borrowEntry.status = "returned";
         borrowEntry.returnedAt = new Date();
-        borrowEntry.lateFee = lateFee; // Apply calculated fee
+        borrowEntry.lateFee = lateFee;
         await borrowEntry.save();
 
         await Book.findByIdAndUpdate(borrowEntry.book, { bookAvailability: true, borrowedBy: null });
 
-        res.status(200).json({ message: "Book returned successfully!", lateFee });
+        res.status(200).json({ message: "Book returned successfully!", returnDate: new Date(), lateFee });
     } catch (error) {
         console.error("❌ Error returning book:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 app.get("/api/books", async (req, res) => {
     try {
@@ -195,6 +241,17 @@ app.get("/api/books", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch books" });
     }
 });
+
+app.get("/api/books/random", async (req, res) => {
+    try {
+        const books = await Book.aggregate([{ $sample: { size: 8 } }]); // Get 8 random books
+        res.json(books);
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
+
 
 
 // ✅ Get ALL Borrow Requests (for admin)
@@ -257,64 +314,27 @@ app.post("/api/books", upload.single("bookCover"), async (req, res) => {
     }
 });
 
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "lindsaysalvacion110@gmail.com", // Your Gmail address
-        pass: "jbib imfx asbw ktma", // Your generated App Password
-    },
-    debug: true,
-    logger: true,
-});
-
-// ✅ Function to Check & Notify Overdue Books
-async function checkOverdueBooks() {
+app.patch("/api/users/:id", async (req, res) => {
     try {
-        const today = new Date();
-        console.log("🔍 Checking for overdue books...");
+        const { id } = req.params;
+        const { role } = req.body;
 
-        // Find books that are overdue and haven't been notified
-        const overdueBooks = await Borrow.find({
-            dueDate: { $lt: today },
-            status: "approved",
-            notified: false,
-        }).populate("user", "email name")
-          .populate("book", "bookTitle");
-
-        if (overdueBooks.length === 0) {
-            console.log("✅ No overdue books found.");
-            return;
+        if (!["admin", "librarian", "student", "courier"].includes(role)) {
+            return res.status(400).json({ message: "Invalid role" });
         }
 
-        for (const borrow of overdueBooks) {
-            const { user, book, _id } = borrow;
-            console.log(`📢 Sending overdue notice for ${borrow.book.bookTitle} to ${user.email}`);
+        const user = await userModel.findByIdAndUpdate(id, { role }, { new: true });
 
-            const mailOptions = {
-                from: "lindsaysalvacion110@gmail.com",
-                to: user.email,
-                subject: `📢 Overdue Book Notice: ${book.bookTitle}`,
-                text: `Hello Reader, your borrowed book "${borrow.book.bookTitle}" was due on ${borrow.dueDate.toDateString()}.\n\nPlease return it as soon as possible to avoid penalties.\n\nThank you!`,
-            };
-
-            try {
-                await transporter.sendMail(mailOptions);
-                console.log(`✅ Overdue email sent to ${user.email}`);
-            } catch (error) {
-                console.error("❌ Error sending overdue email:", error);
-            }
-
-            // Update borrow entry to prevent duplicate notifications
-            await Borrow.findByIdAndUpdate(_id, { notified: true });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
+
+        res.json({ message: "Role updated successfully", user });
     } catch (error) {
-        console.error("❌ Error checking overdue books:", error);
+        console.error("Error updating user role:", error);
+        res.status(500).json({ message: "Server error" });
     }
-}
-
-// ✅ Schedule Overdue Check Every Hour
-setInterval(checkOverdueBooks, 60 * 60 * 1000); // Run every 1 hour
-
+});
 
   
 // Example Express.js route handler
@@ -352,9 +372,6 @@ app.put('/api/books/:id', upload.single('bookCover'), async (req, res) => {
     }
 });
 
-  
-
-
   app.delete("/api/books/:id", async (req, res) => {
     const { id } = req.params;
   
@@ -369,18 +386,62 @@ app.put('/api/books/:id', upload.single('bookCover'), async (req, res) => {
     }
   });
   
+
+// ✅ Update user by ID (PUT)
+app.put("/api/users/:id", async (req, res) => {
+    try {
+        console.log("Updating user with ID:", req.params.id);
+        console.log("Request body:", req.body);
+
+        const updatedUser = await userModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+        if (!updatedUser) {
+            console.error("❌ User not found!");
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error("❌ Error updating user:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+app.get("/api/users/:userId", async (req, res) => {
+    try {
+        const user = await userModel.findById(req.params.userId).lean(); // ✅ Return plain JSON
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // ✅ Ensure premium status is always included
+        res.json({
+            _id: user._id,
+            user: user.user,
+            email: user.email,
+            role: user.role,
+            premium: user.premium || { status: "basic" } // Default to "basic" if missing
+        });
+    } catch (error) {
+        console.error("❌ Error fetching user:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
   // ✅ Get User Profile by ID
   app.get("/api/users/:id", async (req, res) => {
     try {
-        let id = req.params.id.trim();  // ✅ Remove extra spaces & newlines
-        console.log("📢 Fetching user with ID:", `"${id}"`); // Debug log
+        let id = req.params.id.trim();
+        console.log("📢 Fetching user with ID:", `"${id}"`);
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             console.log("❌ Invalid ObjectId format");
             return res.status(400).json({ error: "Invalid user ID format" });
         }
 
-        const user = await userModel.findById(id).select("user email role");
+        const user = await userModel.findById(id);
+
 
         if (!user) {
             console.log("❌ User not found in database");
@@ -394,6 +455,75 @@ app.put('/api/books/:id', upload.single('bookCover'), async (req, res) => {
         res.status(500).json({ error: "Internal server error", details: error.message });
     }
 });
+
+const saltRounds = 10;
+
+// Assuming you are using Express
+app.post('/api/users', async (req, res) => {
+    try {
+        const { user, email, password, role } = req.body;
+
+        // Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Now save the user with the hashed password
+        const newUser = new userModel({ user, email, password: hashedPassword, role });
+        await newUser.save();
+
+        res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// DELETE route to handle deleting a user by ID
+// DELETE route to handle deleting a user by ID
+app.delete('/api/users/:id', async (req, res) => {
+    const { id } = req.params;  // Grab user ID from URL parameter
+
+    try {
+        // Find and delete user by ID
+        const deletedUser = await userModel.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error deleting user:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.get('/api/stats', async (req, res) => {
+  try {
+    // Query the total number of users
+    const totalUsers = await userModel.countDocuments();
+
+    // Query the total number of books
+    const totalBooks = await Book.countDocuments();
+
+    // Query the total number of borrowed books (borrowed but not yet returned)
+    const totalBorrowedBooks = await Borrow.countDocuments({ isReturned: false });
+
+    // Query active sessions (you can adjust this to your specific needs, e.g., based on login activity)
+    const activeSessions = 20;  // For now, assume 20 active sessions
+
+    // Send the actual data in the response
+    res.json({
+      totalUsers,
+      totalBooks,
+      totalBorrowedBooks,
+      activeSessions,
+    });
+  } catch (error) {
+    console.error('❌ Error fetching stats:', error);
+    res.status(500).send('Error fetching stats');
+  }
+});
+
 
 // ✅ Rate a Borrowed Book
 app.put("/api/rate/:borrowId", async (req, res) => {
@@ -461,11 +591,27 @@ app.put("/api/rate/:borrowId", async (req, res) => {
 });
 
 //MINIGAME ONE
+app.put('/quote/:id', async (req, res) => {
+    try {
+        const { text, author } = req.body; // Get updated data from request body
+        const { id } = req.params; // Get the quote ID from URL
 
-const Quote = mongoose.model('Quote', new mongoose.Schema({
-    text: String,
-    author: String,
-}));
+        const updatedQuote = await Quote.findByIdAndUpdate(
+            id,
+            { text, author },
+            { new: true, runValidators: true } // Return updated quote & validate changes
+        );
+
+        if (!updatedQuote) {
+            return res.status(404).json({ error: "Quote not found." });
+        }
+
+        res.json({ message: "✅ Quote updated successfully!", quote: updatedQuote });
+    } catch (error) {
+        console.error("❌ Error updating quote:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 // Fetch a random quote dynamically
 app.get('/quote', async (req, res) => {
@@ -480,12 +626,56 @@ app.get('/quote', async (req, res) => {
         res.status(500).json({ error: "Error fetching quote" });
     }
 });
+// Purchase Premium Subscription
+app.post("/api/buy-premium", async (req, res) => {
+    const { userId } = req.body;
+    
+    console.log("🛒 Premium purchase request for:", userId);
 
-  
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+            console.log("❌ User not found:", userId);
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.premium = { status: "lifetime", expiryDate: null };
+        await user.save();
+
+        console.log("✅ Premium activated successfully for:", userId);
+        res.status(200).json({ message: "Premium activated!", premium: user.premium });
+
+    } catch (err) {
+        console.error("❌ Error processing premium:", err);
+        res.status(500).json({ message: "Error processing premium", error: err.message });
+    }
+});
+
+// Check Premium Status
+app.get("/api/check-premium/:userId", async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.status(200).json({ premium: user.premium });
+    } catch (err) {
+        res.status(500).json({ message: "Error checking premium status" });
+    }
+});
+
+app.get("/", (req, res) => {
+    res.send("📢 Courier Club API is running...");
+});
+
 // ✅ Routes
 app.use("/api", bookRoutes);
+app.use("/api/articles", articleRoutes);
 app.use("/api/borrow", borrowRoutes);
 app.use("/api/admin", adminRoutes);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use("/api/premium", premiumRoutes);
 
 // ✅ Start Server
 app.listen(3004, () => {

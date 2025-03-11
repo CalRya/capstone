@@ -1,6 +1,7 @@
 import Admin from '../../Admin/Admin';
 import ManageUsers from '../../Admin/manageUsers';
 import NavbarAdmin from '../../Navbar/NavbarAdmin';
+import LibrarianPanel from '../../Admin/LibrarianPanel';
 
 function AboutPage() {
 
@@ -8,7 +9,7 @@ function AboutPage() {
     <main className="App">
       <NavbarAdmin/>
       <Admin />
-      <ManageUsers/>
+      <LibrarianPanel />
     </main>
   );
 }
