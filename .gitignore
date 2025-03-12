@@ -26,3 +26,4 @@ dist-ssr
 =======
 client/vite.config.js
 >>>>>>> ee8b3b6 (Initial commit)
+.vercel
