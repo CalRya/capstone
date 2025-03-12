@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import "../CSS FOLDER/libraryPreview.css";
 
 const LibraryPreview = () => {
   const [books, setBooks] = useState([]);
